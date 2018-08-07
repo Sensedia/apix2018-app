@@ -1,0 +1,74 @@
+body {
+	font-family: sans-serif;
+	color: #56256b;
+	background-color: #efefef;
+}
+
+.form-container {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	margin: auto auto 20px auto;
+	padding: 20px;
+	width: 80%;
+	max-width: 540px;
+	background-color: #fafafa;
+	border: solid 1px #dedede;
+	border-radius: 4px;
+}
+
+.form-item { display: inline-block; }
+
+.form-item { width: 100%; }
+
+h1 { text-align: center; }
+
+label { font-size: 12px; }
+
+input {
+	border: solid 1px #ccc;
+	outline-color: #ea5b0c;
+	margin: 5px 0 20px;
+	padding: 0 4px;
+	height: 32px;
+	box-sizing: border-box;
+	width: 100%;
+}
+
+@media only screen and (min-width: 540px) {
+	.form-number { width: 50%; }
+	.form-date { width: 23%; }
+	.form-cvv { width: 23%; }
+	.form-name { width: 60%; }
+	.form-valor { width: 38%; }
+	.form-telefone { width: 30%; }
+	.form-email { width: 35%; }
+	.form-cpf { width: 25%; }
+	.form-latitude { width: 49%; }
+	.form-longitude { width: 49%; }
+}
+
+.form-number input {
+	background-image: url('images/bandeira-default.png');
+	background-size: 24px 24px;
+	background-repeat: no-repeat;
+	background-position: right 4px center;
+}
+
+button {
+	margin-left: auto;
+	padding: 8px 24px;
+	color: #fff;
+	border: none;
+	outline: none;
+	background-color: #ea5b0c;
+	transition: background-color .15s ease;
+}
+
+button:active { background-color: #b8490b; }
+
+
+#numeroCartao.invalido{
+	background-color: #ffdddd;
+
+}

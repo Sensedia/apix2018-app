@@ -1,0 +1,19 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: apix-pay
+  namespace: commons
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: "apix-pay"
+spec:
+  tls:
+  - hosts:
+    - apix-pay.sensedia.com
+    secretName: sensedia-wildcard
+  rules:
+  - host: apix-pay.sensedia.com
+    http:
+      paths:
+      - backend:
+          serviceName: apix-pay
+          servicePort: 80

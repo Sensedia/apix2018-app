@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+
+<html lang="pt-br">
+
+<head>
+	<title>APIX Pay</title>
+	<meta charset="utf-8">
+	<meta name="theme-color" content="#4a2564">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="stylesheet.css">
+	<link rel="manifest" href="manifest.json">
+	<script type="text/javascript" src="sw-register.js"></script>
+	<script type="text/javascript" src="app.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+</head>
+
+<body>
+	<h1>APIX Pay</h1>
+
+	<form name="form" onsubmit=sendPayment()>
+		<div class="form-container">
+			<div class="form-item form-number">
+				<label>Número do cartão:</label>
+				<br>
+				<input name="numero" id="numeroCartao" type="text" contenteditable="true" oninput=validaBin() pattern="^[0-9]*$" maxlength="16">
+			</div>
+			<div class="form-item form-date">
+				<label>Validade:</label>
+				<br>
+				<input id="validade" name="validade" type="text">
+			</div>
+			<div class="form-item form-cvv">
+				<label>CVV:</label>
+				<br>
+				<input name="cvv" type="text" maxlength="3">
+			</div>
+			<div class="form-item form-name">
+				<label>Nome completo (como no cartão):</label>
+				<br>
+				<input name="nome" type="text">
+			</div>
+			<div class="form-item form-valor">
+				<label>Valor do Pagamento:</label>
+				<br>
+				<input name="valor" type="number" min="0.00" max="10000.00" step="0.01">
+			</div>
+			<div class="form-item form-cpf">
+				<label>CPF:</label>
+				<br>
+				<input name="cpf" type="text">
+			</div>
+			<div class="form-item form-telefone">
+				<label>Telefone:</label>
+				<br>
+				<input name="telefone" type="text">
+			</div>
+			<div class="form-item form-email">
+				<label>E-mail:</label>
+				<br>
+				<input name="email" type="email">
+			</div>
+			<button name="submit" type="submit">Enviar</button>
+		</div>
+		<div class="form-container">
+			<div class="form-item form-latitude">
+				<label>Latitude:</label>
+				<br>
+				<input name="startLat" type="text">
+			</div>
+			<div class="form-item form-longitude">
+				<label>Longitude:</label>
+				<br>
+				<input name="startLon" type="text">
+			</div>
+		</div>
+	</form>
+</body>
+
+</html>
+
+<script>
+	window.onload = function () {
+		var startPos;
+		var geoOptions = {
+			enableHighAccuracy: true
+		}
+
+		var geoSuccess = function (position) {
+			startPos = position;
+			document.getElementsByName('startLat')[0].value = startPos.coords.latitude;
+			document.getElementsByName('startLon')[0].value = startPos.coords.longitude;
+		};
+		var geoError = function (error) {
+			console.log('Error occurred. Error code: ' + error.code);
+		};
+
+		navigator.geolocation.getCurrentPosition(geoSuccess, geoError, geoOptions);
+
+	};
+
+	var check = false;
+
+	async function validaBin() {
+		if(!check){
+		if (document.getElementById("numeroCartao").value.length > 5) {
+			check = true;
+			var data = await fetchValidateBin(document.getElementById("numeroCartao").value.substring(0, 6));
+			if (data.data.bin) {
+				console.log(data); 
+				var element = document.getElementById("numeroCartao");
+				element.classList.remove("invalido");
+				element.style.backgroundImage = "url("+data.data.bin.brand.image.url+")";
+				element.style.backgroundSize = "49px";
+				firstRequest = false;
+		} else {
+				var element = document.getElementById("numeroCartao");
+				element.classList.add("invalido");
+				element.style.backgroundImage = "url('images/bandeira-default.png')";
+				element.style.backgroundSize = "27px";
+				
+			}
+		}
+	} else {
+		if(document.getElementsByName('numero')[0].value.length<6){
+			check=false;
+	}
+}
+}
+	function sendPayment() {
+		var payment = {
+						"valor": document.getElementsByName('valor')[0].value,
+						"codigoPagamento": uuidv4(),
+						"cartao": {
+							"nome": document.getElementsByName('nome')[0].value,
+							"numero": document.getElementsByName('numero')[0].value,
+							"validade": document.getElementsByName('validade')[0].value,
+							"cvv": document.getElementsByName('cvv')[0].value
+						},
+						"usuario": {
+							"cpf": document.getElementsByName('cpf')[0].value,
+							"nome": document.getElementsByName('nome')[0].value,
+							"telefone": document.getElementsByName('telefone')[0].value,
+							"email": document.getElementsByName('email')[0].value
+						},
+						"geolocalizacao": {
+							"latitude": document.getElementsByName('startLat')[0].value ? document.getElementsByName('startLat')[0].value : null,
+							"longitude": document.getElementsByName('startLon')[0].value ? document.getElementsByName('startLon')[0].value : null
+						}
+					}
+		
+		event.preventDefault();
+		fetchPayments(payment);
+		
+		firstRequest = true;
+
+		return false;
+	}
+
+	function uuidv4() {
+		return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+			(c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+		)
+	}
+
+</script>

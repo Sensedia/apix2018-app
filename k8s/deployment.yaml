@@ -1,0 +1,28 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: apix-pay
+  namespace: commons
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: apix-pay
+    spec:
+      containers:
+        - name: apix-pay
+          image: gcr.io/sensedia-apix2018/apix-pay:latest
+          ports:
+            - containerPort: 80
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            periodSeconds: 5
+            timeoutSeconds: 5
+            successThreshold: 5
+            failureThreshold: 10
+          resources:
+            requests:
+              cpu: 0.5
