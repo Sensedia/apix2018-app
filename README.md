@@ -10,3 +10,5 @@
       ░  ░          ░   ░    ░     
 
 PWA APIX 2018 App
+# apix2018-app
+APP utilizada para o evento.
