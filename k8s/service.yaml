@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: apix-pay
-  namespace: commons
+  namespace: # informar o namespace do GCP
   labels:
     app: apix-pay
 spec:

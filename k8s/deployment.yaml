@@ -2,7 +2,7 @@ apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   name: apix-pay
-  namespace: commons
+  namespace: # informar o namespace do GCP
 spec:
   replicas: 1
   template:
